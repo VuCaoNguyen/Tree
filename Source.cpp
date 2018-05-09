@@ -1,263 +1,87 @@
-﻿#include <iostream>
-#include <string>
+//#include "stdafx.h"
+#include <iostream>
 using namespace std;
 
-// Khai báo cấu trúc thông tin của 1 tỉnh.
-struct Tinh
-{
-	short MaTinh;
-	string TenTinh;
-	int DanSo;
-	double DienTich;
-};
-typedef struct Tinh TINH;
-
-istream& operator >>(istream &is, TINH &x)
-{
-	cout << "\nNhap vao ma tinh: ";
-	is >> x.MaTinh;
-
-	do{
-		fflush(stdin);
-		cout << "\nNhap vao ten tinh: ";
-		getline(is, x.TenTinh);
-
-		if(x.TenTinh.length() > 30)
-		{
-			cout << "\nTen tinh khong duoc phep vuot qua 30 ky tu. Xin kiem tra lai !";
-		}
-	}while(x.TenTinh.length() > 30);
-
-	do{
-		cout << "\nNhap vao so luong dan so cua tinh: ";
-		is >> x.DanSo;
-
-		if(x.DanSo < 0)
-		{
-			cout << "\nSo luong dan so khong hop le. Xin kiem tra lai !";
-		}
-	}while(x.DanSo < 0);
-
-	do{
-		cout << "\nNhap vao dien tich: ";
-		cin >> x.DienTich;
-
-		if(x.DienTich <= 0)
-		{
-			cout << "\nDien tich khong hop le. Xin kiem tra lai !";
-		}
-	}while(x.DienTich <= 0);
-	return is;
-}
-
-ostream& operator <<(ostream &os, TINH x)
-{
-	os << "\nMa tinh: " << x.MaTinh;
-	os << "\nTen tinh: " << x.TenTinh;
-	os << "\nDan so: " << x.DanSo;
-	os << "\nDien tich: " << (size_t)x.DienTich;
-	return os;
-}
-
-// Khởi tạo cấu trúc Node.
 struct Node
 {
-	TINH Data; // Dữ liệu chứa trong Node.
+	int Data;
 	struct Node *pLeft;
 	struct Node *pRight;
 };
-typedef struct Node NODE;
-typedef NODE* Tree;
+typedef Node *Tree;
 
-// Khởi tạo cây.
-void Init(Tree &t)
-{
-	t = NULL;
-}
 
-// Thêm 1 tỉnh vào cây.
-void InSert(Tree &t, TINH x)
+Node* CreateNode(int x)
 {
-	if(t == NULL)
+	Node *p = new Node;
+	if (p != NULL)
 	{
-		NODE *q = new NODE;
-		q ->Data = x;
-		q ->pLeft = q ->pRight = NULL;
-		t = q;
+		p->Data = x; p->pLeft = NULL; p->pRight = NULL;
 	}
-	else
+	return p;
+}
+void InIt(Tree &root)
+{
+	root = NULL;
+}
+
+
+Tree AddVDTree()
+{
+	Tree root;
+	InIt(root);
+	Node *a, *b, *c, *d, *e, *f, *g, *h;
+	a = CreateNode(8);
+	b = CreateNode(10);
+	c = CreateNode(7);
+	d = CreateNode(1);
+	e = CreateNode(2);
+	f = CreateNode(5);
+	g = CreateNode(9);
+	h = CreateNode(6);
+	if (a && b && c && d && e && f && g && h)
 	{
-		if(x.MaTinh < t ->Data.MaTinh)
-		{
-			InSert(t ->pLeft, x);
-		}
-		else if(x.MaTinh > t ->Data.MaTinh)
-		{
-			InSert(t ->pRight, x);
-		}
+		a->pLeft = b;		a->pRight = c;
+		//Cay trai		
+		b->pLeft = d;		b->pRight = e;		e->pRight = f;
+		//Cay Phai;		
+		c->pLeft = g;		g->pRight = h;
 	}
+	return root = a ;
 }
-
-// Tạo cây.
-void CreateTree(Tree &t)
+void NLR(Tree root)
 {
-	Init(t); // Khởi tạo cây.
-
-	int LuaChon;
-
-	do{
-		cout << "\n----------------- Menu -----------------\n";
-		cout << "\n1. Nhap du lieu";
-		cout << "\n0. Ket thuc";
-		cout << "\n----------------------------------------\n";
-
-		cout << "\nNhap vao lua chon cua ban: ";
-		cin >> LuaChon;
-
-		if(LuaChon != 0 && LuaChon != 1)
-		{
-			cout << "\nLua chon khong hop le. Xin kiem tra lai !";
-		}
-		else
-		{
-			if(LuaChon == 1)
-			{
-				TINH x; // Dữ liệu Node cần nhập.
-				cout << "\nNhap vao du lieu can them: ";
-				cin >> x;
-				InSert(t, x); // Thêm x vào cây.
-			}
-		}
-	}while(LuaChon != 0 || (LuaChon != 0 && LuaChon != 1));
-}
-
-// Duyệt trước.
-void NLR(Tree t)
-{
-	if(t != NULL)
+	if (root)
 	{
-		cout << t ->Data << endl;
-		NLR(t ->pLeft);
-		NLR(t ->pRight);
+		cout << root->Data << "\t";
+		NLR(root->pLeft);
+		NLR(root->pRight);
 	}
 }
 
-// Duyệt giữa.
-void LNR(Tree t)
-{
-	if(t != NULL)
-	{
-		LNR(t ->pLeft);
-		cout << t ->Data << endl;
-		LNR(t ->pRight);
-	}
-}
 
-// Duyệt giữa.
-void LRN(Tree t)
-{
-	if(t != NULL)
-	{
-		LRN(t ->pLeft);
-		LRN(t ->pRight);
-		cout << t ->Data << endl;
-	}
-}
-
-int SoLuongMax = 0;
-NODE* Max = NULL;
-void TimNodeDanSoMax(Tree t)
-{
-	if(t != NULL)
-	{
-		// Xử lý
-		if(t ->Data.DanSo > SoLuongMax)
-		{
-			SoLuongMax = t ->Data.DanSo;
-			Max = t;
-		}
-
-		TimNodeDanSoMax(t ->pLeft);
-		TimNodeDanSoMax(t ->pRight);
-	}
-}
-
-bool Check = false; // Chưa tìm thấy.
-
-// Yêu cầu xuất ra các tỉnh có diện tích lớn hơn 100000.
-void LietKeCacTinhThoaYeuCau(Tree t)
-{
-	if(t != NULL)
-	{
-		// Xử lý.
-		if(t ->Data.DienTich > 100000)
-		{
-			Check = true; // Đã tìm thấy.
-			cout << t ->Data << endl;
-		}
-
-		LietKeCacTinhThoaYeuCau(t ->pLeft);
-		LietKeCacTinhThoaYeuCau(t ->pRight);
-	}
-}
-
-int dem = 0;
-
-// Đếm số lượng các Node lá có diện tích nhỏ hơn 700 và dân số lớn hơn 1000000
-void XuLyNodeLa(Tree t)
-{
-	if(t != NULL)
-	{
-		// Xử lý.
-		if(t ->pLeft == NULL && t ->pRight == NULL) // t là Node lá.
-		{
-			if(t ->Data.DienTich < 700 && t ->Data.DanSo > 1000000)
-			{
-				dem++; // Tăng biến đếm lên.
-			}
-		}
-
-		XuLyNodeLa(t ->pLeft);
-		XuLyNodeLa(t ->pRight);
-	}
-}
-
+Tree CreateTree(int *pre, int *in, int m, int n, int k, int l) {
+	int i;
+	Tree root;
+	if (l < k) return NULL;
+	root = new Node;
+	if (root != NULL) {
+		root->Data = pre[m];
+		for (i = k; i <= l; i++)
+			if (in[i] == pre[m]) break;
+		root->pLeft = CreateTree(pre, in, m + 1, n, k, i - 1);
+		root->pRight = CreateTree(pre, in, m + i - k + 1, n, i + 1, l);
+	} return root;
+}
+//------------------------------------------------------------
 int main()
 {
-	Tree t;
-	CreateTree(t);
+	int arr[] = { 8, 5, 2, 6, 1,7 ,10,12,13,15,18,21,17 };
+	int  arr1[] = { 2,5,1,6,7,8,12,10,18,15,21,13,17 };
 
-	cout << "\n\nNLR\n";
-	NLR(t);
-
-	cout << "\n\nLNR\n";
-	LNR(t);
-
-	cout << "\n\nLRN\n";
-	LRN(t);
-
-	TimNodeDanSoMax(t);
-	cout << "\nDan so lon nhat la: " << SoLuongMax;
-	cout << "\nTinh co dan so lon nhat la: ";
-	cout << Max ->Data;
-
-	cout << "\nCac tinh co dien tich lon hon 100000 la:\n";
-	LietKeCacTinhThoaYeuCau(t);
-	if(Check == false)
-	{
-		cout << "Khong co tinh nao thoa yeu cau !";
-	}
-
-	XuLyNodeLa(t);
-	if(dem == 0)
-	{
-		cout << "\nKhong co Node la' nao thoa yeu cau !";
-	}
-	else
-	{
-		cout << "\nSo luong Node la' thoa yeu cau la: " << dem;
-	}
-
+	Tree root;
+	root = CreateTree(arr, arr1, 0, 12, 0, 12);
+	NLR(root);
 	system("pause");
 	return 0;
 }
